@@ -294,4 +294,4 @@ The project uses a JSON dataset of **18,289** vehicle booking records with the f
 
 ## License
 
-ISC
+This project is developed for educational and assignment purposes.
