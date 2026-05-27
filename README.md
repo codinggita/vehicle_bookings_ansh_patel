@@ -229,7 +229,7 @@ VEHICLE BOOKINGS API — CHECKLIST TEST
 
 ## 📖 API Documentation
 
-**Postman Documentation URL:** `[https://documenter.getpostman.com/view/50841281/2sBXwmRDbN](https://documenter.getpostman.com/view/50841281/2sBXwmRDbN)`
+**Postman Documentation URL:** [https://documenter.getpostman.com/view/50841281/2sBXwmRDbN](https://documenter.getpostman.com/view/50841281/2sBXwmRDbN)
 
 ---
 
