@@ -1,5 +1,7 @@
 const Booking = require("../models/booking.model");
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 // ── Field mapping: sort param names -> schema field names ──
 const SORT_FIELD_MAP = {
   Booking_Value: "bookingValue",
@@ -20,7 +22,17 @@ const SORT_FIELD_MAP = {
 const getAllBookings = async (queryParams) => {
   const filter = {};
 
+  // Default to hiding soft-deleted bookings unless showDeleted is specified
+  if (queryParams.showDeleted === "true") {
+    filter.isDeleted = true;
+  } else if (queryParams.showDeleted === "all") {
+    // Return all (both deleted and non-deleted)
+  } else {
+    filter.isDeleted = { $ne: true };
+  }
+
   // ── Basic filters ──
+
   if (queryParams.status) filter.bookingStatus = queryParams.status;
   if (queryParams.vehicle) filter.vehicleType = queryParams.vehicle;
   if (queryParams.payment) filter.paymentMethod = queryParams.payment;
@@ -29,12 +41,37 @@ const getAllBookings = async (queryParams) => {
   if (queryParams.customer) filter.customerId = queryParams.customer;
   if (queryParams.time) filter.time = queryParams.time;
 
+  // ── Keyword search filter ──
+  if (queryParams.keyword) {
+    const regex = new RegExp(escapeRegExp(String(queryParams.keyword).trim()), "i");
+    filter.$or = [
+      { pickupLocation: { $regex: regex } },
+      { dropLocation: { $regex: regex } },
+      { vehicleType: { $regex: regex } },
+      { bookingStatus: { $regex: regex } },
+      { paymentMethod: { $regex: regex } },
+      { bookingId: { $regex: regex } },
+      { customerId: { $regex: regex } }
+    ];
+  }
+
   // ── Date filter ──
   if (queryParams.date) {
     const dateObj = new Date(queryParams.date);
     const nextDay = new Date(dateObj);
     nextDay.setDate(nextDay.getDate() + 1);
     filter.date = { $gte: dateObj, $lt: nextDay };
+  }
+  if (queryParams.startDate || queryParams.endDate) {
+    filter.date = filter.date || {};
+    if (queryParams.startDate) {
+      filter.date.$gte = new Date(queryParams.startDate);
+    }
+    if (queryParams.endDate) {
+      const endDate = new Date(queryParams.endDate);
+      endDate.setHours(23, 59, 59, 999);
+      filter.date.$lte = endDate;
+    }
   }
 
   // ── Rating filters ──
@@ -156,8 +193,13 @@ const getAllBookings = async (queryParams) => {
     query = query.skip(skip).limit(limit);
   }
 
-  const bookings = await query;
-  return { bookings, page, limit };
+  const [bookings, total] = await Promise.all([
+    query,
+    Booking.countDocuments(filter),
+  ]);
+  const totalPages = limit > 0 ? Math.ceil(total / limit) : total > 0 ? 1 : 0;
+
+  return { bookings, page, limit, total, totalPages };
 };
 
 // Get booking by bookingId
