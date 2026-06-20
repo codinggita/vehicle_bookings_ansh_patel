@@ -71,7 +71,7 @@ const getTopVehicle = async () => {
     { $group: { _id: '$vehicleType', count: { $sum: 1 } } },
     { $sort: { count: -1 } },
     { $limit: 1 },
-    { $project: { _id: 0, vehicleType: '$_id', totalBookings: '$count' } }
+    { $project: { _id: 0, vehicleType: '$_id', count: '$count', totalBookings: '$count' } }
   ]);
   return result.length > 0 ? result[0] : null;
 };
@@ -86,7 +86,7 @@ const getTopPaymentMethod = async () => {
     { $group: { _id: '$paymentMethod', count: { $sum: 1 } } },
     { $sort: { count: -1 } },
     { $limit: 1 },
-    { $project: { _id: 0, paymentMethod: '$_id', totalBookings: '$count' } }
+    { $project: { _id: 0, paymentMethod: '$_id', count: '$count', totalBookings: '$count' } }
   ]);
   return result.length > 0 ? result[0] : null;
 };
@@ -109,6 +109,32 @@ const getLowestFare = async () => {
   return result;
 };
 
+/**
+ * Get cancellation and incomplete reasons statistics
+ * @returns {Promise<Object>} Object containing customer cancels, driver cancels, and incomplete stats
+ */
+const getCancellationStats = async () => {
+  const customerCancel = await Booking.aggregate([
+    { $match: { canceledRidesByCustomer: { $ne: null } } },
+    { $group: { _id: '$canceledRidesByCustomer', count: { $sum: 1 } } },
+    { $sort: { count: -1 } }
+  ]);
+
+  const driverCancel = await Booking.aggregate([
+    { $match: { canceledRidesByDriver: { $ne: null } } },
+    { $group: { _id: '$canceledRidesByDriver', count: { $sum: 1 } } },
+    { $sort: { count: -1 } }
+  ]);
+
+  const incomplete = await Booking.aggregate([
+    { $match: { incompleteRidesReason: { $ne: null } } },
+    { $group: { _id: '$incompleteRidesReason', count: { $sum: 1 } } },
+    { $sort: { count: -1 } }
+  ]);
+
+  return { customerCancel, driverCancel, incomplete };
+};
+
 module.exports = {
   getTotalBookings,
   getSuccessRides,
@@ -119,5 +145,7 @@ module.exports = {
   getTopVehicle,
   getTopPaymentMethod,
   getHighestFare,
-  getLowestFare
+  getLowestFare,
+  getCancellationStats
 };
+

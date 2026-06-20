@@ -62,4 +62,9 @@ router.get('/highest-fare', statsController.highestFare);
  */
 router.get('/lowest-fare', statsController.lowestFare);
 
+/**
+ * @desc    Get cancellation stats and reasons
+ */
+router.get('/cancellations', statsController.cancellationStats);
+
 module.exports = router;

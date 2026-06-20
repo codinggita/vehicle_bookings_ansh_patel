@@ -98,6 +98,15 @@ const lowestFare = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, data: result });
 });
 
+/**
+ * @desc    Get cancellation reasons and statistics
+ * @route   GET /stats/cancellations
+ */
+const cancellationStats = asyncHandler(async (req, res) => {
+  const result = await statsService.getCancellationStats();
+  res.status(200).json({ success: true, data: result });
+});
+
 module.exports = {
   totalBookings,
   successRides,
@@ -108,5 +117,7 @@ module.exports = {
   topVehicle,
   topPaymentMethod,
   highestFare,
-  lowestFare
+  lowestFare,
+  cancellationStats
 };
+
