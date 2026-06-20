@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/booking.controller");
 const { validateBooking } = require("../middlewares/validate");
+const { protect, authorize } = require("../middlewares/auth");
+
+router.use(protect);
+const adminOnly = authorize("admin");
 
 // ── Advanced Routes (MUST come before dynamic :bookingId) ──
 router.get("/top/highest-fare", controller.getHighestFare);
@@ -18,8 +22,8 @@ router.get("/summary/ai", controller.getAISummary);
 router.get("/compare", controller.compareBookings);
 
 // ── Bulk & Mass Operations ──
-router.post("/bulk-insert", controller.bulkInsertBookings);
-router.delete("/delete-all", controller.deleteAllBookings);
+router.post("/bulk-insert", adminOnly, controller.bulkInsertBookings);
+router.delete("/delete-all", adminOnly, controller.deleteAllBookings);
 
 // ── Route Parameter Routes (MUST come before dynamic :bookingId) ──
 
@@ -60,19 +64,19 @@ router.get("/fare/:value", controller.getByFare);
 // ── Basic CRUD Routes ────────────────────────────────────
 
 router.get("/", controller.getAllBookings);
-router.post("/", validateBooking, controller.createBooking);
+router.post("/", adminOnly, validateBooking, controller.createBooking);
 router.get("/:bookingId", controller.getBookingById);
-router.put("/:bookingId", controller.replaceBooking);
-router.patch("/:bookingId/status", controller.updateBookingStatus);
-router.patch("/:bookingId/payment", controller.updateBookingPayment);
-router.patch("/:bookingId/rating", controller.updateBookingRating);
-router.patch("/:bookingId/fare", controller.updateBookingFare);
-router.patch("/:bookingId/distance", controller.updateRideDistance);
-router.patch("/:bookingId/location", controller.updateRideLocation);
-router.delete("/:bookingId", controller.deleteBooking);
+router.put("/:bookingId", adminOnly, controller.replaceBooking);
+router.patch("/:bookingId/status", adminOnly, controller.updateBookingStatus);
+router.patch("/:bookingId/payment", adminOnly, controller.updateBookingPayment);
+router.patch("/:bookingId/rating", adminOnly, controller.updateBookingRating);
+router.patch("/:bookingId/fare", adminOnly, controller.updateBookingFare);
+router.patch("/:bookingId/distance", adminOnly, controller.updateRideDistance);
+router.patch("/:bookingId/location", adminOnly, controller.updateRideLocation);
+router.delete("/:bookingId", adminOnly, controller.deleteBooking);
 
 // ── Soft Delete Routes ──
-router.patch("/:bookingId/soft-delete", controller.softDeleteBooking);
-router.patch("/:bookingId/restore", controller.restoreBooking);
+router.patch("/:bookingId/soft-delete", adminOnly, controller.softDeleteBooking);
+router.patch("/:bookingId/restore", adminOnly, controller.restoreBooking);
 
 module.exports = router;

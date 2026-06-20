@@ -9,13 +9,17 @@ const asyncHandler = (fn) => (req, res, next) =>
 // @desc   Get all bookings (with query-param filtering, sorting, pagination)
 // @route  GET /api/v1/bookings
 const getAllBookings = asyncHandler(async (req, res) => {
-  const { bookings, page, limit } = await bookingService.getAllBookings(req.query);
+  const { bookings, page, limit, total, totalPages } = await bookingService.getAllBookings(req.query);
   res.status(200).json({
     success: true,
     count: bookings.length,
-    page,
-    limit: limit || "all",
     data: bookings,
+    pagination: {
+      page,
+      limit: limit || total || 1,
+      total,
+      totalPages,
+    },
   });
 });
 
