@@ -6,7 +6,7 @@ const rateLimit = require('express-rate-limit');
  */
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 10000,
   message: { success: false, message: 'Too many requests, please try again after 15 minutes' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -18,7 +18,7 @@ const generalLimiter = rateLimit({
  */
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 10000,
   message: { success: false, message: 'Too many authentication attempts, please try again after 15 minutes' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -30,7 +30,7 @@ const authLimiter = rateLimit({
  */
 const searchLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
+  max: 10000,
   message: { success: false, message: 'Too many search requests, please try again after 15 minutes' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -42,7 +42,7 @@ const searchLimiter = rateLimit({
  */
 const adminLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 30,
+  max: 10000,
   message: { success: false, message: 'Too many admin requests, please try again after 15 minutes' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -54,7 +54,7 @@ const adminLimiter = rateLimit({
  */
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 10000,
   message: { success: false, message: 'Too many upload requests, please try again after 15 minutes' },
   standardHeaders: true,
   legacyHeaders: false,

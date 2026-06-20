@@ -1,5 +1,8 @@
-const express = require("express");
 const dotenv = require("dotenv");
+// Load environment variables FIRST — before any module that reads process.env
+dotenv.config();
+
+const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/errorHandler");
@@ -23,18 +26,31 @@ const {
   adminLimiter,
 } = require("./middlewares/rateLimiter");
 
-// Load environment variables
-dotenv.config();
-
 // Connect to MongoDB
 connectDB();
 
 const app = express();
 
 // ── CORS Configuration ──
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  process.env.FRONTEND_URL, // Add this for production!
+].filter(Boolean);
 app.use(
   cors({
-    origin: "*", // Allow all origins (configure for production)
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/.*\.vercel\.app$/.test(origin) ||
+        /^https:\/\/.*\.netlify\.app$/.test(origin)
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
