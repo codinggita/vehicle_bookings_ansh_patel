@@ -28,12 +28,12 @@ const validateBooking = (req, res, next) => {
   }
 
   // Validate booking value
-  if (bookingValue !== undefined && (isNaN(bookingValue) || bookingValue < 0)) {
+  if (bookingValue !== undefined && bookingValue !== null && bookingValue !== '' && (isNaN(bookingValue) || bookingValue < 0)) {
     errors.push('Booking value must be a positive number');
   }
 
   // Validate ride distance
-  if (rideDistance !== undefined && (isNaN(rideDistance) || rideDistance < 0)) {
+  if (rideDistance !== undefined && rideDistance !== null && rideDistance !== '' && (isNaN(rideDistance) || rideDistance < 0)) {
     errors.push('Ride distance must be a positive number');
   }
 
@@ -54,12 +54,13 @@ const validateBooking = (req, res, next) => {
   }
 
   // Validate ratings range (0-5)
-  if (driverRatings !== undefined && driverRatings !== null && (isNaN(driverRatings) || driverRatings < 0 || driverRatings > 5)) {
+  if (driverRatings !== undefined && driverRatings !== null && driverRatings !== '' && (isNaN(driverRatings) || driverRatings < 0 || driverRatings > 5)) {
     errors.push('Driver ratings must be between 0 and 5');
   }
-  if (customerRating !== undefined && customerRating !== null && (isNaN(customerRating) || customerRating < 0 || customerRating > 5)) {
+  if (customerRating !== undefined && customerRating !== null && customerRating !== '' && (isNaN(customerRating) || customerRating < 0 || customerRating > 5)) {
     errors.push('Customer rating must be between 0 and 5');
   }
+
 
   if (errors.length > 0) {
     return res.status(400).json({ success: false, errors });
