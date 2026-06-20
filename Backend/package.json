@@ -6,10 +6,10 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "seed": "node scripts/seed.js",
-    "backup": "node scripts/backup.js",
-    "test": "node scripts/test_new_api.js"
+    "seed": "node seed.js",
+    "test": "node test.js"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
