@@ -57,7 +57,7 @@ export default function Customers() {
         <section className="customer-grid">
           {filtered.map((c, i) => (
             <article className="customer-card" key={c.customerId}>
-              <div className={vatar tone-\}>
+              <div className={`avatar tone-${i % 4}`}>
                 <UserRound />
               </div>
               <div>
@@ -66,7 +66,7 @@ export default function Customers() {
                 <p>{c.totalBookings} completed interactions</p>
               </div>
               <div className="activity-bar">
-                <i style={{ width: \% }} />
+                <i style={{ width: `${Math.min(100, c.totalBookings * 4)}%` }} />
               </div>
               <footer>
                 <span>Engagement</span>

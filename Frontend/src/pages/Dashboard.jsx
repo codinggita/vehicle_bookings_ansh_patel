@@ -62,7 +62,7 @@ export default function Dashboard() {
       <Helmet><title>Command Center</title></Helmet>
       <PageHeader
         eyebrow="LIVE OPERATIONS / TODAY"
-        title={Good \, \.}
+        title={`Good ${new Date().getHours() < 12 ? 'morning' : 'afternoon'}, ${user?.name?.split(' ')[0]}.`}
         description="Here is the pulse of your booking network right now."
         actions={
           <>
@@ -92,7 +92,7 @@ export default function Dashboard() {
         <MetricCard
           label="Completed rides"
           value={compact(s.success)}
-          note={\% completion rate}
+          note={`${completionPct}% completion rate`}
           icon={CheckCircle2}
           tone="blue"
           trend={completionPct}
@@ -100,7 +100,7 @@ export default function Dashboard() {
         <MetricCard
           label="Cancellation"
           value={compact(s.cancelled)}
-          note={\% of bookings}
+          note={`${cancelPct}% of bookings`}
           icon={XCircle}
           tone="orange"
           trend={-cancelPct}
@@ -108,7 +108,7 @@ export default function Dashboard() {
         <MetricCard
           label="Active customers"
           value={compact(s.customers)}
-          note={\% unique rider ratio}
+          note={`${customerDensityPct}% unique rider ratio`}
           icon={Users}
           tone="purple"
           trend={customerDensityPct}
@@ -203,7 +203,7 @@ export default function Dashboard() {
               </thead>
               <tbody>
                 {data.recent.slice(0, 7).map((b) => (
-                  <tr key={b.bookingId} onClick={() => navigate(/bookings/\)}>
+                  <tr key={b.bookingId} onClick={() => navigate(`/bookings/${b.bookingId}`)}>
                     <td><b>{b.bookingId}</b><small>{b.customerId}</small></td>
                     <td>{b.pickupLocation}<span className="route-arrow">→</span>{b.dropLocation}</td>
                     <td>{b.vehicleType}</td>

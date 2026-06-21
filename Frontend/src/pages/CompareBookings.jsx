@@ -20,12 +20,12 @@ export default function CompareBookings() {
     setError('');
     setData(null);
     try {
-      const response = await api.get(/bookings/compare, {
+      const response = await api.get('/bookings/compare', {
         params: { booking1: id1.trim(), booking2: id2.trim() }
       });
       const result = response.data || response;
       if (!result.booking1 || !result.booking2) {
-        throw new Error(One or both booking records were not found. Make sure IDs start with CNR.);
+        throw new Error('One or both booking records were not found. Make sure IDs start with CNR.');
       }
       setData(result);
     } catch (err) {
@@ -166,7 +166,7 @@ export default function CompareBookings() {
               <div className="detail-item" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '10px' }}>
                 <span style={{ color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px' }}><Star size={15} /> Driver Rating</span>
                 <b className={getHighlightClass(booking1.driverRatings, booking2.driverRatings)}>
-                  {booking1.driverRatings ? \ / 5 : 'Not Rated'}
+                  {booking1.driverRatings ? `${booking1.driverRatings} / 5` : 'Not Rated'}
                 </b>
               </div>
 
@@ -233,7 +233,7 @@ export default function CompareBookings() {
               <div className="detail-item" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '10px' }}>
                 <span style={{ color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px' }}><Star size={15} /> Driver Rating</span>
                 <b className={getHighlightClass(booking2.driverRatings, booking1.driverRatings)}>
-                  {booking2.driverRatings ? \ / 5 : 'Not Rated'}
+                  {booking2.driverRatings ? `${booking2.driverRatings} / 5` : 'Not Rated'}
                 </b>
               </div>
 

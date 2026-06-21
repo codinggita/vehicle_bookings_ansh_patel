@@ -87,22 +87,22 @@ export default function Analytics() {
       <section className="metric-grid">
         <MetricCard
           label="Completion rate"
-          value={${pct(data.success, data.total)}%}
-          note={${compact(data.success)} successful rides}
+          value={`${pct(data.success, data.total)}%`}
+          note={`${compact(data.success)} successful rides`}
           icon={Target}
           tone="lime"
         />
         <MetricCard
           label="Cancelled rides"
           value={compact(data.cancelled)}
-          note={${pct(data.cancelled, data.total)}% of demand}
+          note={`${pct(data.cancelled, data.total)}% of demand`}
           icon={XCircle}
           tone="orange"
         />
         <MetricCard
           label="Top vehicle"
           value={data.topVehicle?.vehicleType || '—'}
-          note={${compact(data.topVehicle?.count || 0)} bookings}
+          note={`${compact(data.topVehicle?.count || 0)} bookings`}
           icon={Bike}
           tone="blue"
         />
