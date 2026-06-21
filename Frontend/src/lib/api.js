@@ -15,3 +15,17 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+// Response interceptor to format success objects and catch authentication errors globally
+api.interceptors.response.use(
+  ({ data }) => data,
+  (error) => {
+    if (error.response?.status === 401 && !String(error.config?.url).includes('/auth/login')) {
+      localStorage.removeItem('rideops_token');
+      localStorage.removeItem('rideops_user');
+      window.dispatchEvent(new Event('rideops:unauthorized'));
+    }
+    const message = error.response?.data?.message || (error.request ? 'The operations API is unavailable.' : error.message);
+    return Promise.reject(new Error(message));
+  },
+);
