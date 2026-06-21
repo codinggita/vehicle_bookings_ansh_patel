@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../lib/api';
 
+// Async thunk to retrieve booking records matching filters
 export const fetchBookings = createAsyncThunk(
   'data/fetchBookings',
   async (params, { rejectWithValue }) => {
@@ -13,6 +14,7 @@ export const fetchBookings = createAsyncThunk(
   }
 );
 
+// Async thunk to aggregate success, cancelled, and total stats counts
 export const fetchStats = createAsyncThunk(
   'data/fetchStats',
   async (_, { rejectWithValue }) => {
@@ -20,6 +22,7 @@ export const fetchStats = createAsyncThunk(
       const successResp = await api.get('/bookings/success');
       const cancelledResp = await api.get('/bookings/cancelled');
       const allResp = await api.get('/bookings');
+      
       return {
         total: allResp.data.count || 0,
         success: successResp.data.count || 0,
@@ -33,7 +36,13 @@ export const fetchStats = createAsyncThunk(
 
 const dataSlice = createSlice({
   name: 'data',
-  initialState: { bookings: [], pagination: {}, stats: { total: 0, success: 0, cancelled: 0 }, loading: false, error: null },
+  initialState: {
+    bookings: [],
+    pagination: {},
+    stats: { total: 0, success: 0, cancelled: 0 },
+    loading: false,
+    error: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -54,4 +63,5 @@ const dataSlice = createSlice({
       });
   },
 });
+
 export default dataSlice.reducer;
