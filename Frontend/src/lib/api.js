@@ -6,6 +6,7 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Middleware request interceptor to strip leading slashes and attach jwt tokens
 api.interceptors.request.use((config) => {
   if (config.url && config.url.startsWith('/')) {
     config.url = config.url.substring(1);
