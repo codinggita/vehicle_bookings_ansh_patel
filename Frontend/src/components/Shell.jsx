@@ -67,7 +67,7 @@ export default function Shell() {
 
   const search = (e) => {
     e.preventDefault();
-    if (query.trim()) navigate(/bookings?keyword=);
+    if (query.trim()) navigate(`/bookings?keyword=${encodeURIComponent(query.trim())}`);
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;

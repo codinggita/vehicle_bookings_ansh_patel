@@ -22,7 +22,7 @@ const validationSchema = Yup.object({
 });
 
 const freshValues = {
-  bookingId: CNR\,
+  bookingId: `CNR${Date.now().toString().slice(-10)}`,
   customerId: '',
   date: new Date().toISOString().slice(0, 10),
   time: new Date().toTimeString().slice(0, 5),
@@ -55,7 +55,7 @@ export default function CreateBooking({ mode }) {
   const loadBooking = useCallback(async () => {
     if (!isEdit || !bookingId) return;
     try {
-      const response = await api.get(/bookings/\);
+      const response = await api.get(`/bookings/${bookingId}`);
       const b = response.data || response;
       setInitialValues({
         bookingId: b.bookingId || '',
@@ -92,7 +92,7 @@ export default function CreateBooking({ mode }) {
     try {
       const payload = {
         ...values,
-        date: new Date(\T\).toISOString(),
+        date: new Date(`${values.date}T${values.time}`).toISOString(),
         bookingValue: Number(values.bookingValue),
         rideDistance: Number(values.rideDistance || 0),
         driverRatings: values.driverRatings !== '' ? Number(values.driverRatings) : null,
@@ -106,11 +106,11 @@ export default function CreateBooking({ mode }) {
       };
 
       if (isEdit) {
-        await api.put(/bookings/\, payload);
+        await api.put(`/bookings/${bookingId}`, payload);
       } else {
         await api.post('/bookings', payload);
       }
-      navigate(/bookings/\);
+      navigate(`/bookings/${values.bookingId}`);
     } catch (err) {
       setServerError(err.response?.data?.message || err.message);
     } finally {
@@ -135,12 +135,12 @@ export default function CreateBooking({ mode }) {
 
   return (
     <>
-      <Helmet><title>{isEdit ? Edit \ : 'Create Booking'}</title></Helmet>
-      <Link to={isEdit ? /bookings/\ : '/bookings'} className="back-link">
+      <Helmet><title>{isEdit ? `Edit ${bookingId}` : 'Create Booking'}</title></Helmet>
+      <Link to={isEdit ? `/bookings/${bookingId}` : '/bookings'} className="back-link">
         <ArrowLeft />{isEdit ? 'Back to booking' : 'Back to bookings'}
       </Link>
       <PageHeader
-        eyebrow={isEdit ? ADMIN / EDIT RECORD / \ : 'ADMIN / NEW RECORD'}
+        eyebrow={isEdit ? `ADMIN / EDIT RECORD / ${bookingId}` : 'ADMIN / NEW RECORD'}
         title={isEdit ? 'Edit booking' : 'Create booking'}
         description={isEdit ? 'Update ride parameters for this operational record.' : 'Add a validated ride record to the live operations database.'}
       />
@@ -290,7 +290,7 @@ export default function CreateBooking({ mode }) {
             </section>
 
             <div className="form-actions">
-              <Link className="button ghost" to={isEdit ? /bookings/\ : '/bookings'}>Cancel</Link>
+              <Link className="button ghost" to={isEdit ? `/bookings/${bookingId}` : '/bookings'}>Cancel</Link>
               <button type="submit" className="button primary" disabled={isSubmitting}>
                 {isSubmitting ? <ButtonLoader /> : <>{isEdit ? 'Save changes' : 'Create booking'}<ArrowRight /></>}
               </button>

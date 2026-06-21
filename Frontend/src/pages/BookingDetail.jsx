@@ -17,7 +17,7 @@ export default function BookingDetail() {
 
   const load = useCallback(async () => {
     try {
-      const response = await api.get(/bookings/\);
+      const response = await api.get(`/bookings/${bookingId}`);
       setBooking(response.data || response);
     } catch (err) {
       setError(err.message);
@@ -29,9 +29,9 @@ export default function BookingDetail() {
   }, [load]);
 
   const handleHardDelete = async () => {
-    if (!window.confirm(Warning: Permanently delete booking record \? This cannot be undone.)) return;
+    if (!window.confirm(`Warning: Permanently delete booking record ${bookingId}? This cannot be undone.`)) return;
     try {
-      await api.delete(/bookings/\);
+      await api.delete(`/bookings/${bookingId}`);
       navigate('/bookings');
     } catch (err) {
       setError(err.message);
@@ -39,9 +39,9 @@ export default function BookingDetail() {
   };
 
   const handleSoftDelete = async () => {
-    if (!window.confirm(Archive/Soft-delete booking record \? The booking will be hidden from standard lists but can be restored later.)) return;
+    if (!window.confirm(`Archive/Soft-delete booking record ${bookingId}? The booking will be hidden from standard lists but can be restored later.`)) return;
     try {
-      await api.patch(/bookings/\/soft-delete);
+      await api.patch(`/bookings/${bookingId}/soft-delete`);
       setSuccess('Booking archived successfully.');
       load();
     } catch (err) {
@@ -51,7 +51,7 @@ export default function BookingDetail() {
 
   const handleRestore = async () => {
     try {
-      await api.patch(/bookings/\/restore);
+      await api.patch(`/bookings/${bookingId}/restore`);
       setSuccess('Booking restored successfully.');
       load();
     } catch (err) {
@@ -67,17 +67,17 @@ export default function BookingDetail() {
     [Clock3, 'Pickup time', booking.time],
     [Car, 'Vehicle', booking.vehicleType],
     [CreditCard, 'Payment', booking.paymentMethod || 'Not recorded'],
-    [Route, 'Distance', \ km],
-    [Star, 'Driver rating', booking.driverRatings ? \ / 5 : 'Not rated']
+    [Route, 'Distance', `${booking.rideDistance || 0} km`],
+    [Star, 'Driver rating', booking.driverRatings ? `${booking.driverRatings} / 5` : 'Not rated']
   ];
 
   return (
     <>
-      <Helmet><title>{Booking \}</title></Helmet>
+      <Helmet><title>{`Booking ${booking.bookingId}`}</title></Helmet>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <Link to="/bookings" className="back-link" style={{ margin: 0 }}><ArrowLeft />Back to bookings</Link>
-        <Link to={/compare?b1=\} className="text-link" style={{ fontSize: '13px' }}>Compare this ride</Link>
+        <Link to={`/compare?b1=${booking.bookingId}`} className="text-link" style={{ fontSize: '13px' }}>Compare this ride</Link>
       </div>
 
       {success && (
@@ -94,7 +94,7 @@ export default function BookingDetail() {
       )}
 
       <PageHeader 
-        eyebrow={BOOKING / \} 
+        eyebrow={`BOOKING / ${booking.bookingId}`} 
         title="Ride overview" 
         description="Complete operational record and service timeline." 
         actions={
@@ -111,7 +111,7 @@ export default function BookingDetail() {
                 </>
               ) : (
                 <>
-                  <Link to={/bookings/\/edit} className="button ghost">
+                  <Link to={`/bookings/${booking.bookingId}/edit`} className="button ghost">
                     <Edit size={16} /> Edit Booking
                   </Link>
                   <button className="button ghost" onClick={handleSoftDelete} style={{ border: '1px solid var(--orange)', color: 'var(--orange)' }}>
@@ -197,8 +197,8 @@ export default function BookingDetail() {
                 <small style={{ color: 'var(--orange)' }}>CANCELLATION CONTEXT</small>
                 <b style={{ display: 'block', marginTop: '4px' }}>
                   {booking.bookingStatus === 'Canceled by Customer' 
-                    ? Reason: \
-                    : Reason: \}
+                    ? `Reason: ${booking.canceledRidesByCustomer || 'Not detailed'}`
+                    : `Reason: ${booking.canceledRidesByDriver || 'Not detailed'}`}
                 </b>
               </div>
             </div>

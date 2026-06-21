@@ -109,10 +109,10 @@ export default function Bookings() {
       b.bookingStatus,
       b.rideDistance
     ]);
-    const csv = [headers, ...rows].map((r) => r.map((v) => "\").join(',')).join('\n');
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v ?? '').replaceAll('"', '""')}"`).join(',')).join('\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-    a.download = ideops-bookings-\.csv;
+    a.download = `rideops-bookings-${Date.now()}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -168,7 +168,7 @@ export default function Bookings() {
         </select>
 
         <button 
-          className={utton small \} 
+          className={`button small ${showAdvanced ? 'primary' : 'ghost'}`} 
           onClick={() => setShowAdvanced(!showAdvanced)}
           style={{ height: '38px', whiteSpace: 'nowrap' }}
         >
@@ -248,7 +248,7 @@ export default function Bookings() {
                 </thead>
                 <tbody>
                   {result.data.map((b) => (
-                    <tr key={b.bookingId} onClick={() => navigate(/bookings/\)}>
+                    <tr key={b.bookingId} onClick={() => navigate(`/bookings/${b.bookingId}`)}>
                       <td>
                         <b>{b.bookingId}</b>
                         <small>{b.customerId}</small>

@@ -86,8 +86,8 @@ export default function Users() {
     }
     setResetSubmitting(true);
     try {
-      await api.put(/auth/users/\, { password: resetPassword });
-      setSuccess(Password for \ has been reset.);
+      await api.put(`/auth/users/${resetTarget._id}`, { password: resetPassword });
+      setSuccess(`Password for ${resetTarget.name} has been reset.`);
       setShowResetModal(false);
     } catch (err) {
       setResetError(err.message || 'Failed to reset password');
@@ -101,13 +101,13 @@ export default function Users() {
       alert('You cannot delete your own account from here. Go to Settings to close your account.');
       return;
     }
-    if (!window.confirm(Permanently remove operator \? This will revoke their workspace access.)) return;
+    if (!window.confirm(`Permanently remove operator ${user.name}? This will revoke their workspace access.`)) return;
     
     setError('');
     setSuccess('');
     try {
-      await api.delete(/auth/users/\);
-      setSuccess(Operator \ removed successfully.);
+      await api.delete(`/auth/users/${user._id}`);
+      setSuccess(`Operator ${user.name} removed successfully.`);
       load();
     } catch (err) {
       setError(err.message || 'Failed to delete operator');
@@ -126,7 +126,7 @@ export default function Users() {
         }
         payload.password = password;
         await api.post('/auth/users', payload);
-        setSuccess(Operator \ created successfully.);
+        setSuccess(`Operator ${name} created successfully.`);
       } else {
         if (password) {
           if (password.length < 6) {
@@ -134,8 +134,8 @@ export default function Users() {
           }
           payload.password = password;
         }
-        await api.put(/auth/users/\, payload);
-        setSuccess(Operator \ updated successfully.);
+        await api.put(`/auth/users/${selectedUser._id}`, payload);
+        setSuccess(`Operator ${name} updated successfully.`);
       }
       setShowModal(false);
       load();
@@ -219,7 +219,7 @@ export default function Users() {
                     </td>
                     <td>{u.email}</td>
                     <td>
-                      <span className={status-pill \}>
+                      <span className={`status-pill ${u.role === 'admin' ? 'success' : 'pending'}`}>
                         {u.role === 'admin' ? 'Administrator' : 'Viewer'}
                       </span>
                     </td>
