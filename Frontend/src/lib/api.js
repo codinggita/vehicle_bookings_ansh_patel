@@ -5,3 +5,12 @@ const api = axios.create({
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
+
+api.interceptors.request.use((config) => {
+  if (config.url && config.url.startsWith('/')) {
+    config.url = config.url.substring(1);
+  }
+  const token = localStorage.getItem('rideops_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
