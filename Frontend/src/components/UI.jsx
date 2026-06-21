@@ -9,12 +9,12 @@ export function PageHeader({ eyebrow, title, description, actions }) {
 }
 
 export function MetricCard({ label, value, note, icon: Icon, tone = 'lime', trend }) {
-  return <article className={metric-card }><div className="metric-top"><span>{label}</span><i><Icon size={18} /></i></div><strong>{value}</strong><div className="metric-note">{trend !== undefined && <span className={trend >= 0 ? 'up' : 'down'}>{trend >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}{Math.abs(trend)}%</span>}<small>{note}</small></div></article>;
+  return <article className={`metric-card ${tone}`}><div className="metric-top"><span>{label}</span><i><Icon size={18} /></i></div><strong>{value}</strong><div className="metric-note">{trend !== undefined && <span className={trend >= 0 ? 'up' : 'down'}>{trend >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}{Math.abs(trend)}%</span>}<small>{note}</small></div></article>;
 }
 
 export function Status({ value }) {
   const kind = value === 'Success' ? 'success' : value?.includes('Canceled') ? 'danger' : 'warning';
-  return <span className={status }><i />{value || 'Unknown'}</span>;
+  return <span className={`status ${kind}`}><i />{value || 'Unknown'}</span>;
 }
 
 export function Empty({ title = 'No records found', message = 'Try adjusting the current filters.' }) {
