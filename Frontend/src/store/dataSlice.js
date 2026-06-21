@@ -35,5 +35,23 @@ const dataSlice = createSlice({
   name: 'data',
   initialState: { bookings: [], pagination: {}, stats: { total: 0, success: 0, cancelled: 0 }, loading: false, error: null },
   reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchBookings.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchBookings.fulfilled, (state, action) => {
+        state.bookings = action.payload.data;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
+      })
+      .addCase(fetchBookings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchStats.fulfilled, (state, action) => {
+        state.stats = action.payload;
+      });
+  },
 });
 export default dataSlice.reducer;
