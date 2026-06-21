@@ -13,9 +13,27 @@ export const fetchBookings = createAsyncThunk(
   }
 );
 
+export const fetchStats = createAsyncThunk(
+  'data/fetchStats',
+  async (_, { rejectWithValue }) => {
+    try {
+      const successResp = await api.get('/bookings/success');
+      const cancelledResp = await api.get('/bookings/cancelled');
+      const allResp = await api.get('/bookings');
+      return {
+        total: allResp.data.count || 0,
+        success: successResp.data.count || 0,
+        cancelled: cancelledResp.data.count || 0,
+      };
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
 const dataSlice = createSlice({
   name: 'data',
-  initialState: { bookings: [], pagination: {}, stats: {}, loading: false, error: null },
+  initialState: { bookings: [], pagination: {}, stats: { total: 0, success: 0, cancelled: 0 }, loading: false, error: null },
   reducers: {},
 });
 export default dataSlice.reducer;
