@@ -29,3 +29,10 @@ api.interceptors.response.use(
     return Promise.reject(new Error(message));
   },
 );
+
+export default api;
+
+export const money = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Number(value || 0));
+export const compact = (value) => new Intl.NumberFormat('en-IN', { notation: 'compact', maximumFractionDigits: 1 }).format(Number(value || 0));
+export const dateTime = (value) => value ? new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : 'Not available';
+export const pct = (part, total) => total ? Math.round((part / total) * 100) : 0;
